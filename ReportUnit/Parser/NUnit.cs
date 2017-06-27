@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Xml.Linq;
 using ReportUnit.Model;
 using ReportUnit.Utils;
@@ -216,12 +217,14 @@ namespace ReportUnit.Parser
                         ? tc.Element("reason").Element("message").Value.Trim()
                         : "";
 
-                   // add NUnit console output to the status message
-                   test.StatusMessage += tc.Element( "output" ) != null
-                     ? tc.Element( "output" ).Value.Trim()
-                     : "";
+                   //// add NUnit console output to the status message
+                   //test.StatusMessage += tc.Element( "output" ) != null
+                   //  ? tc.Element( "output" ).Value.Trim()
+                   //  : "";
 
-                   testSuite.TestList.Add(test);
+                    test.Output = tc.Element("output") != null ? HttpUtility.HtmlEncode(tc.Element("output").Value.Trim()) : "";
+
+                    testSuite.TestList.Add(test);
                 });
 
                 testSuite.Status = ReportUtil.GetFixtureStatus(testSuite.TestList);
